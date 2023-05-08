@@ -10,9 +10,13 @@ from typing import Tuple
 
 class RSPForecaster(PRForecaster):
     def __init__(self, ctx_manager: RecurrentContextsManager,
-                 inp_len: int, hidden_size: int, dtype=torch.float32, *args, **kwargs):
+                 inp_len: int, hidden_size: int, dtype=torch.float32,
+                 use_prev_errors: bool = True, *args, **kwargs):
         super().__init__(ctx_manager, *args, **kwargs)
-        inp_size = inp_len + hidden_size + 1  # + 1 comes from previous error
+        inp_size = inp_len + hidden_size
+        self.use_prev_errors = use_prev_errors
+        if self.use_prev_errors:
+            inp_size += 1  # + 1 comes from previous error
         self.ctx_shape = torch.Size([hidden_size])
         self.sigm_lin = nn.Linear(inp_size, hidden_size, dtype=dtype)
         self.w_ctx_cand_lin = nn.Linear(inp_size, hidden_size, dtype=dtype)
@@ -26,7 +30,10 @@ class RSPForecaster(PRForecaster):
                  ctx: Optional[torch.Tensor],
                  prev_errors: torch.Tensor,
                  **kwargs) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
-        inp = torch.cat((inp, ctx, prev_errors), dim=1)
+        if self.use_prev_errors:
+            inp = torch.cat((inp, ctx, prev_errors), dim=1)
+        else:
+            inp = torch.cat((inp, ctx), dim=1)
         z = torch.sigmoid(self.sigm_lin(inp))
         ctx_cand = self.w_ctx_cand_lin(inp)
         new_ctx = (1 - z) * ctx + z * ctx_cand
