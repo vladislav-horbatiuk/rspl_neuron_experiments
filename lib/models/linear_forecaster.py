@@ -18,7 +18,7 @@ class LinearForecaster(PRForecaster):
     def _forward(self,
                  inp: torch.Tensor,
                  ctx: Optional[torch.Tensor],
-                 prev_errors: torch.Tensor,
+                 *args,
                  **kwargs) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         return self.predictor(inp), None
 
