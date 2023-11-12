@@ -91,7 +91,7 @@ $$ f(x;w) = u(w \cdot x); x,w \in \mathbb{R}^n $$
 В контексте задачи прогнозирования популярными являются искусственные нейронные сети прямого распространения (feedforward neural network) со структурой вида:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.4]{/home/ivan/my_projects/nau_forecasting/docs/ff-neural-net.png}
+\includegraphics[scale=0.4]{ff-neural-net.png}
 \label{}
 \end{figure}
 которые по сути являются нелинейной вариацией AR-модели: $X_t = f(X_{t-1},...,X_{t-p})$ - где $f$ - функция, реализуемая нейронной сетью.
@@ -111,7 +111,7 @@ $$ f(x;w) = w_0 + \sum_{i=1}^{n}{w_ix_i} + \sum_{i=1}^{n}{\sum_{j=i}^{n}{w_{ij}x
 \\
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{/home/ivan/Downloads/LSTM3-chain.png}
+\includegraphics[scale=0.3]{LSTM3-chain.png}
 \label{}
 \end{figure}
 \\
@@ -127,7 +127,7 @@ $$ h_t = o_t * tanh(c_t) $$
 GRU нейрон это, по сути, упрощенная версия LSTM нейрона:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.50]{/home/ivan/Downloads/LSTM3-var-GRU.png}
+\includegraphics[scale=0.50]{LSTM3-var-GRU.png}
 \label{}
 \end{figure}
 В данном нейроне вектор выходов $h_t$ так же "выполняет"\ роль вектора контекста, и используются следующие блоки:
@@ -187,26 +187,26 @@ $$ SP(x;W_+,W_-, S) = (1 - \sigma(x;S)) * (W_- \cdot x) + \sigma(x;S) * (W_+ \cd
 Введя обозначения $ z = \sigma(x;S) $, $a = W_- \cdot x$ и $b = W_+ \cdot x$ получаем:
 $$ SP(x) = (1 - z) * a + z * b $$
 Что очень похоже на блок рассчета нового вектора выходов в нейроне GRU:
-$$ h_t = (1-z_t)*h_{t-1} + z_t*\tilde{h}_t $$
+$$ h_t = (1-z_t)*h_{t-1} + z_t*\tilde{h}_t. $$
 Таким образом, слегка изменив SP нейрон, можно получить его рекуррентную версию, Recurrent Sigmoid Piecewise (RSP) нейрон, который принимает на вход вектор $p_t=[h_{t-1}, x_t]$ и выдает $h_t$:
-$$ h_t=RSP(p_t;W_+,W_-,S) = (1-\sigma(p_t;S))*(W_- \cdot p_t) + \sigma(p_t;S)*(W_+ \cdot p_t) $$
+$$ h_t=RSP(p_t;W_c,S) = (1-\sigma(p_t;S))*p_t + \sigma(p_t;S)*(W_c \cdot p_t) $$
 Либо же, по аналогии с LSTM/GRU нейронами, мат. модель RSP нейрона можно записать в несколько этапов/блоков:
 $$ z_t = \sigma(S \cdot [h_{t-1}, x_t]) $$
-$$ q_t = W_- \cdot [h_{t-1}, x_t] $$
-$$ \tilde{h}_t = W_+ \cdot [h_{t-1}, x_t] $$
-$$ h_t = (1 - z_t) * q_t + z_t * \tilde{h}_t $$
+$$ \tilde{h}_t = W_c \cdot [h_{t-1}, x_t] $$
+$$ h_t = (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t $$
 \\
 И представить их в виде структурной схемы:
 \\
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{/home/ivan/Documents/recurrent_sigmoid_piecewise_neuron_structure.png}
+\includegraphics[scale=0.3]{recurrent_sigmoid_piecewise_neuron_structure.png}
 \label{}
 \end{figure}
 
 Поверхностно сравнив RSP нейрон с LSTM и GRU нейронами можно сделать следующие наблюдения:
 \begin{itemize}
 \item Математическая модель RSP нейрона проще (используется лишь один нелинейный сигмоидальный блок) чем модели LSTM и GRU нейронов. В задаче прогнозирования временных рядов более простые модели часто предпочтительны на практике.
+\item По сравнению с LSTM нейроном, RSP нейрон имеет в 2 раза меньше настраиваемых параметров (2 матрицы весовых коэффициентов в RSP нейроне против 4 матриц в LSTM). По сравнению с GRU нейроном - RSP имеет в 1.5 раз меньше параметров (2 матрицы вместо 3 в GRU).
 \item При этом, RSP так же как и LSTM и GRU нейроны позволяет забывать определенные значения в векторе контекста при необходимости.
  
 \end{itemize}
@@ -218,13 +218,13 @@ $$ h_t = (1 - z_t) * q_t + z_t * \tilde{h}_t $$
   \item Показатели сердечного ритма 4 разных пациентов в различных состояниях [x]:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{/home/ivan/my_projects/nau_forecasting/docs/heart_rates_data.png}
+\includegraphics[scale=0.5]{heart_rates_data.png}
 \label{}
 \end{figure}
   \item Временной ряд OT (oil temperature, температура масла в электрическом трансформере) из набора данных Electricity Transformer Dataset, который часто используют для оценки методов прогнозирования [x]:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{/home/ivan/my_projects/nau_forecasting/docs/etth_ot_time_series.png}
+\includegraphics[scale=0.5]{etth_ot_time_series.png}
 \label{}
 \end{figure}
 \end{enumerate}
@@ -267,6 +267,23 @@ $$ h_t = (1 - z_t) * q_t + z_t * \tilde{h}_t $$
 
 Как видно из рассчитанных тестовых метрик для обоих рядов, сеть с RSP нейронами имеет значения метрик либо очень близкие либо лучше чем у LSTM и GRU сетей, при этом она имеет меньшее количество параметров и более простую структуру нейрона. 
 
+Для оценочого сравнения быстродействия нейронов замеряем среднее время "рассчета"\ GRU и RSP нейронов среди 100000 запусков для разных значений размерности входного вектора и вектора скрытого состояния. LSTM нейрон, как известно из литературы, более медленный чем GRU.
+
+\begin{table}[H]
+\caption{Среднее время рассчета нейронов для разных размерностей входного и скрытого векторов (из 100000 попыток)}
+\begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+ \hline
+  Размерности векторов x и h & 8, 64 & 4, 12 &  4, 32 & 2, 8 & 2, 16 \\
+  \hline
+ GRU & 0.054 мс & 0.0487 мс & 0.0503 мс & 0.0492 мс & 0.0507 мс \\
+ \hline 
+ RSP & 0.0355 мс & 0.032 мс & 0.0327 мс & 0.0317 мс & 0.032 мс \\
+ \hline
+\end{tabular}
+\end{table}
+
+В среднем, время рассчета RSP нейрона в 1.58 раз меньше, чем время рассчета GRU нейрона.
+   
 \section*{Применение рекуррентных сетей на основе RSP нейронов для прогнозирования временных рядов}
 Стандартную линейную ARMA модель можно обобщить следующим образом:
 $$ X_t = \varepsilon_t + f(X_{t-1}, ..., X_{t-p}) + g(\varepsilon_{t-1},...,\varepsilon_{t-q}) ,$$
@@ -275,7 +292,7 @@ $$ X_t = \varepsilon_t + f(X_{t-1}, ..., X_{t-p}, \varepsilon_{t-1}, ..., \varep
 где $f: \mathbb{R}^{p+q} \to \mathbb{R}$ - нелинейная функция. На основе этого обобщения предлагается следующая схема прогнозирования временных рядов:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{/home/ivan/my_projects/nau_forecasting/docs/rsp_forecasting_scheme.png}
+\includegraphics[scale=0.3]{rsp_forecasting_scheme.png}
 \label{}
 \end{figure}
 где:
@@ -291,7 +308,7 @@ $$ X_t = \varepsilon_t + f(X_{t-1}, ..., X_{t-p}, \varepsilon_{t-1}, ..., \varep
 Основным отличием данной прогнозирующей схемы от обычного использования прогнозирующей модели является блок предсказания ошибки. По сути, данный блок является нелинейной вариацией MA блока в модели ARMA. Использование этого блока позволяет схеме реагировать на изменения в качестве прогноза базисной модели. Например, пускай для некоторого момента времени $t'$ получена достаточно большая ошибка прогноза $ e_{t'+1} = f_{t'+1} - x_{t'+1}, e_{t'+1} > 0 $, то есть прогноз модели оказался значительно больше реального значения. Одной из возможных причин может быть неожиданный для модели скачок "вниз" временного ряда:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.25]{/home/ivan/my_projects/nau_forecasting/docs/bad_model_forecast_too_high_example1_for_dynamic_EC_block.png}
+\includegraphics[scale=0.25]{bad_model_forecast_too_high_example1_for_dynamic_EC_block.png}
 \label{}
 \end{figure}
 
@@ -327,13 +344,13 @@ $$ X_t = \varepsilon_t + f(X_{t-1}, ..., X_{t-p}, \varepsilon_{t-1}, ..., \varep
 Пример прогнозов линейного предиктора для одного пациента на обучающей:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.35]{/home/ivan/my_projects/nau_forecasting/docs/baseline_train_forecast.png}
+\includegraphics[scale=0.35]{baseline_train_forecast.png}
 \label{}
 \end{figure}
  и тестовой:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.35]{/home/ivan/my_projects/nau_forecasting/docs/baseline_train_forecast.png}
+\includegraphics[scale=0.35]{baseline_train_forecast.png}
 \label{}
 \end{figure}
 выборках.
@@ -362,14 +379,14 @@ $$ X_t = \varepsilon_t + f(X_{t-1}, ..., X_{t-p}, \varepsilon_{t-1}, ..., \varep
 В качестве второго примера возьмем временной ряд дневных значений индекса DJI за период 2015/1/1 - 2023/1/1:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{/home/ivan/my_projects/nau_forecasting/docs/dji_2015_01_01_2023_01_01.png}
+\includegraphics[scale=0.5]{dji_2015_01_01_2023_01_01.png}
 \label{}
 \end{figure}
 
 Разбив данный временной ряд на обучающую и тестовую выборки:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{/home/ivan/my_projects/nau_forecasting/docs/dji_train_test.png}
+\includegraphics[scale=0.5]{dji_train_test.png}
 \label{}
 \end{figure}
 
@@ -382,13 +399,13 @@ $$ X_t = \varepsilon_t + f(X_{t-1}, ..., X_{t-p}, \varepsilon_{t-1}, ..., \varep
 Очевидно, что ансамбль регрессионных деревьев очень плохо справился с прогнозированием значений временного ряда в соответствующих периодах. Причиной таких прогнозов является принцип построения таких деревьев, где значение прогноза для определенного входного вектора $x$ является усредненное значение выходного значения для всех примеров в листе дерева, куда попадает вектор $x$. Существуют различные методы исправления данного недостатка, однако такой случай можно рассматривать как конкретный пример проблемы непостоянного характера прогнозируемого временного ряда. Механизм коррекции, предлагаемый в данной статье, в теории способен "реагировать"\ на ухудшение качества прогноза базисного предиктора в таких ситуациях и корректировать его по возможности. Для этого, при настройке параметров блока коррекции также можно добавлять шум в прогнозы базисного предиктора, чтобы "учить"\ блок реагировать необходимым образом. Применяя этот подход получаем такой прогноз базисного предиктора XGBoost с обученным блоком коррекции на тестовой выборке:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{/home/ivan/my_projects/nau_forecasting/docs/dji_test_xgboost_plus_correction.png}
+\includegraphics[scale=0.5]{dji_test_xgboost_plus_correction.png}
 \label{}
 \end{figure}
 где хорошо видно, что добавление блока коррекции позволило существенно улучшить качество прогноза в проблемных регионах. Построив график прогнозов отдельно блока коррекции можно увидеть, как он реагирует на плохой прогноз базисного предиктора и "исправляет"\ его:
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{/home/ivan/my_projects/nau_forecasting/docs/dji_test_xgboost_with_correction_correction_outputs.png}
+\includegraphics[scale=0.5]{dji_test_xgboost_with_correction_correction_outputs.png}
 \label{}
 \end{figure}
 
