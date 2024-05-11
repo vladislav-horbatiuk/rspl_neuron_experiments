@@ -1,0 +1,6 @@
+version=0.6.0
+typesetter=pdflatex
+steps=texpdf
+root=/home/ivan/my_projects/nau_forecasting/paper_preparation_for_machine_learning_elsevier_journal/sn-article-template/sn-article.tex
+
+file=/home/ivan/my_projects/nau_forecasting/paper_preparation_for_machine_learning_elsevier_journal/sn-article-template/paper.tex
