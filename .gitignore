@@ -129,3 +129,5 @@ dmypy.json
 
 # ignore data dir
 data/
+
+*.pkl

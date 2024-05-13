@@ -93,7 +93,7 @@
 
 \begin{document}
 
-\title[Article Title]{Time Series Forecasting Using Recurrent Neural Networks Based on Recurrent Sigmoid Piecewise Neurons }
+\title[Article Title]{Time Series Forecasting Using Recurrent Neural Networks Based on Recurrent Sigmoid Piecewise Linear Neurons }
 
 %%=============================================================%%
 %% GivenName	-> \fnm{Joergen W.}
@@ -113,7 +113,7 @@
 \orgaddress{\street{Liubomyra Huzara Ave 1}, \city{Kyiv}, \postcode{03058}, \country{Ukraine}}}
 
 
-\abstract{This work is devoted to intelligent forecasting of time series. An analysis of known methods for forecasting time series is carried out; it is shown that neural networks, in particular recurrent neural networks, have a certain advantage. In order to increase the accuracy of solving the forecasting problem, this paper proposes to build recurrent neural networks based on the use of Recurrent Sigmoid Piecewise newrons, proposed by the authors of the article. The structure of the Sigmoid Piecewise neuron is given and its features are determined. A mathematical model of the Recurrent Sigmoid Piecewise neuron has been defined. A comparative analysis of the solution to the problem of time series forecasting, the proposed neural network with known approaches, was carried out.}
+\abstract{We propose a new recurrent sigmoid piecewise linear neuron that can be used in neural networks to model time series when solving forecasting problem. The neuron is simpler than widely used long short-term memory and gated recurrent unit neurons and can be used as a drop-in replacement of these neurons. Simpler model of the new neuron results in faster training and inference of networks composed of such neurons. Besides theoretical analysis of the neuron's mathematical model the experiments on real world time series were performed to measure and compare accurracy of networks with different structures and used neuron types. Results of experiments show that networks with new neuron achieve similar or slightly better accuracy while having noticeably faster training and inference time.}
 
 \keywords{recurrent neural networks, time series forecasting, sigmoid piecewise linear neuron, long short term memory neuron, gated recurrent unit neuron}
 
