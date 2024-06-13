@@ -137,11 +137,11 @@ As mentioned previously, two most popular neurons used in RNNs are LSTM and GRU.
 \item \textbf{Output Gate}: This gate determines the output of the cell. It processes the current input and the previous hidden state through a sigmoid function, and multiplies this by the tanh of the cell state to produce the next hidden state. This hidden state is then used as the output.
 \end{enumerate}
 
-These gates work together to allow LSTM cells to selectively remember or forget information over long periods, effectively managing long-term dependencies and mitigating issues with gradient vanishing or exploding, making LSTMs particularly powerful for time series forecasting and sequential data tasks. Altogether the gates are organized according to the following scheme:
+These gates work together to allow LSTM cells to selectively remember or forget information over long periods, effectively managing long-term dependencies and mitigating issues with gradient vanishing or exploding, making LSTMs particularly powerful for time series forecasting and sequential data tasks. Altogether the gates are organized according to the scheme presented on Figure \ref{fig1}:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{lstm_neuron_structure.png}
+\includegraphics[width=0.6\textwidth]{Fig1.png}
 \caption{LSTM neuron structure}\label{fig1}
 \end{figure}
 
@@ -166,10 +166,10 @@ o_t &= \sigma( W_o \cdot [h_{t-1},x_t] + b_o) \nonumber \\
 h_t &= o_t * tanh(c_t) \label{eq6}
 \end{align}
 
-A GRU neuron is essentially a simplified version of an LSTM neuron: 
+A GRU neuron is essentially a simplified version of the LSTM neuron with its scheme presented on Figure \ref{fig2}:
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.45\textwidth]{gru_neuron_structure.png}
+\includegraphics[width=0.45\textwidth]{Fig2.png}
 \caption{GRU neuron structure}\label{fig2}
 \end{figure}
 
@@ -208,11 +208,11 @@ If we rewrite piecewise linear neuron as:
 pl(x;w_+,w_-,h) = (w_+ \cdot x) \cdot \boldsymbol{1}_{[0;\infty)}(h \cdot x) + 
    (w_- \cdot x) \cdot \boldsymbol{1}_{(-\infty;0)}(h \cdot x) \label{eq9}
 \end{equation}
-we see that SPL neuron essentially replaces step functions $\boldsymbol{1}_{[0;\infty)}(h \cdot x)$ and $\boldsymbol{1}_{(-\infty;0)}(h \cdot x)$ with sigmoid functions $ \sigma_+(x;h) = \frac{1}{1 + e^{-h \cdot x}} $ and $ \sigma_-(x;h) = \frac{1}{1 + e^{h \cdot x}} $ respectively:
+we see that SPL neuron essentially replaces step functions $\boldsymbol{1}_{[0;\infty)}(h \cdot x)$ and $\boldsymbol{1}_{(-\infty;0)}(h \cdot x)$ with sigmoid functions $ \sigma_+(x;h) = \frac{1}{1 + e^{-h \cdot x}} $ and $ \sigma_-(x;h) = \frac{1}{1 + e^{h \cdot x}} $ respectively, and sigmoid function can be viewed as a smooth approximation of the step function, with both functions graphs presented on Figure \ref{fig3}:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{step_vs_sigmoid.png}
+\includegraphics[width=0.7\textwidth]{Fig3.png}
 \caption{Comparison of step and sigmoid functions}\label{fig3}
 \end{figure}
 
@@ -228,11 +228,11 @@ that together compose "into" SPL neuron:
 \begin{equation}
  spl(x;w_+,w_-,w_h) = a(s_+(x;w_+),s_-(x;w_-),s_h(x;w_h)). \label{eq12}
  \end{equation}
- Unfortunately, because the SPL neuron's activation function is a function of three variables it is not  possible to plot it as a two- or three-dimensional graph. However, we can plot the graph with some additional constraints. For example, here is the three dimensional plot of the activation function with an added constraint $S_+=5S_-$:
+ Unfortunately, because the SPL neuron's activation function is a function of three variables it is not  possible to plot it as a two- or three-dimensional graph. However, we can plot the graph with some additional constraints. For example, the three dimensional plot of the activation function with an added constraint $S_+=5S_-$ is presented on Figure \ref{fig4}:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{spl_neuron_3d_plot_with_constraint_sp_eq_5sm.png}
+\includegraphics[width=0.7\textwidth]{Fig4.png}
 \caption{3D plot of SPL neuron's activation function with added constraint $S_p=5S_m$}\label{fig4}
 \end{figure}
 
@@ -252,19 +252,19 @@ Since the mathematical model of the Sigmoid Piecewise neuron is a differentiable
  &=\frac{(w_+ \cdot x)x_q - (w_- \cdot x)x_q}{(1+e^{-h \cdot x})(1+e^{h \cdot x})}=  \nonumber \\
 & =\frac{x_q(w_+ \cdot x - w_- \cdot x)}{2+e^{-h \cdot x} + e^{h \cdot x}} \label{eq15}
 \end{align}
-So, we have the following 3D plots for the derivatives $\frac{\partial f}{\partial w_{+(q)}}$ and $\frac{\partial f}{\partial w_{-(q)}}$ as functions of variables $x_q$ and $s_h=h \cdot x$:
+3D plots for the derivatives $\frac{\partial f}{\partial w_{+(q)}}$ and $\frac{\partial f}{\partial w_{-(q)}}$ as functions of variables $x_q$ and $s_h=h \cdot x$ are presented on Figure \ref{fig5}:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{spl_neuron_wp_wm_partial_derivatives_3d_surfaces.png}
+\includegraphics[width=0.7\textwidth]{Fig5.png}
 \caption{3D plots of SPL neuron's partial derivatives w.r.t. $w_{+(q)}$ and $w_{-(q)}$}\label{fig5}
 \end{figure}
 
-And this is the plot of the derivative $\frac{\partial f}{\partial h_q}$ as function of the variables $t=x_q(w_+ \cdot x - w_- \cdot x)$ and $s_h=h \cdot x$:
+And the plot of the derivative $\frac{\partial f}{\partial h_q}$ as function of the variables $t=x_q(w_+ \cdot x - w_- \cdot x)$ and $s_h=h \cdot x$ is shown on Figure \ref{fig6}:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{spl_neuron_h_partial_derivative_3d_surface.png}
+\includegraphics[width=0.7\textwidth]{Fig6.png}
 \caption{3D plot of SPL neuron's partial derivative w.r.t. $h_q$}\label{fig6}
 \end{figure}
 
@@ -321,11 +321,11 @@ z_t &= \sigma(S \cdot [h_{t-1}, x_t]) \nonumber \\
 \tilde{h}_t &= W_c \cdot [h_{t-1}, x_t] \nonumber \\
 h_t &= (1 - z_t) * h_{t-1} + z_t * \tilde{h}_t \label{eq22}
 \end{align}
-And present them in the form of a block diagram:
+And present them in the form of the scheme shown on Figure \ref{fig7}:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{recurrent_sigmoid_piecewise_neuron_structure.png}
+\includegraphics[width=0.5\textwidth]{Fig7.png}
 \caption{RSPL neuron structure}\label{fig7}
 \end{figure}
 
@@ -340,25 +340,25 @@ By performing a simple comparison of the RSPL neuron with LSTM and GRU neurons f
 To evaluate the effectiveness of using the RSPL neuron in modeling the predicted time series, two real time series were used: 
 
 \begin{itemize}
-\item Daily values of the Dow Jones index for the period 2015/01/01-2023/1/1, total length of the time series - 2014 values:
+\item Daily values of the Dow Jones index for the period 2015/01/01-2023/1/1, total length of the time series - 2014 values, with the series' plot as shown on Figure \ref{fig8}:
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{dji_2015_01_01_2023_01_01.png}
+\includegraphics[width=0.5\textwidth]{Fig8.png}
 \caption{Dow Jones index daily values time series plot}\label{fig8}
 \end{figure}
-\item OT (oil temperature) time series from the Electricity Transformer Dataset, which is often used to evaluate forecasting methods, with a total time series length of 5000 values \citep{haoyietal-informer-2021}:
+\item OT (oil temperature) time series from the Electricity Transformer Dataset, which is often used to evaluate forecasting methods, with a total time series length of 5000 values \citep{haoyietal-informer-2021}, with the plot shown on Figure \ref{fig9}:
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{etth_ot_time_series.png}
+\includegraphics[width=0.5\textwidth]{Fig9.png}
 \caption{Plot of oil temperature time series from the Electricity Transformer dataset}\label{fig9}
 \end{figure}
 \end{itemize}
 
 These series were divided into training and test sets, after which the model parameters were adjusted on the training set and metrics were calculated on the test set. To bring the original time series to a “more stationary form,” an optimal linear predictor was first selected for each training sample, after which the corresponding recurrent network was “set” with the task of predicting the deviation of the real value of the time series from the forecast of the linear predictor. Two previous values of the time series were used as input to the network to predict the next value; the learning rate for all models was set to 0.001, maximum number of training epochs to 300. To compare RSPL neuron with LSTM and GRU in various network configurations, the following values of hyperparameters were tested: number of network layers $\in [1, 3, 5]$, dimension of the hidden state vector $\in [4, 8, 32]$.
-In total, given 3 choices for the neuron type, 3 choices for the number of layers, and 3 choices for the dimension of the hidden state vector, 27 different models were trained for each time series. For each model, the error values on the test set were calculated once every 20 training epochs, and the time spent on completing each epoch was also logged. Summary of the obtained results: 
+In total, given 3 choices for the neuron type, 3 choices for the number of layers, and 3 choices for the dimension of the hidden state vector, 27 different models were trained for each time series. For each model, the error values on the test set were calculated once every 20 training epochs, and the time spent on completing each epoch was also logged. Summary of the obtained results is presented in Table \ref{table1} and Table \ref{table2}:
 \\
 \begin{table}[H]
-\caption{Results summary for different network configurations on the Dow Jones index time series}
+\caption{Results summary for different network configurations on the Dow Jones index time series}\label{table1}
 \begin{tabular}{|p{1.4cm}|p{1.4cm}|p{1.4cm}|p{1.5cm}|p{2.5cm}|p{1.9cm}|p{2cm}|}
 \hline
 Number of layers & Hidden layer size & Neuron type & Best test error & Relative best test error & Mean epoch time (s) & Relative mean epoch time\\
@@ -421,7 +421,7 @@ Number of layers & Hidden layer size & Neuron type & Best test error & Relative 
 \end{table}
 
 \begin{table}[H]
-\caption{Results summary for different network configurations on the OT ETTH time series}
+\caption{Results summary for different network configurations on the OT ETTH time series}\label{table2}
 \begin{tabular}{|p{1.4cm}|p{1.4cm}|p{1.4cm}|p{1.5cm}|p{2.5cm}|p{1.9cm}|p{2cm}|}
 \hline
 Number of layers & Hidden layer size & Neuron type & Best test error & Relative best test error & Mean epoch time (s) & Relative mean epoch time \\
@@ -485,10 +485,10 @@ Number of layers & Hidden layer size & Neuron type & Best test error & Relative 
 
 In these tables, "relative best test error" and "relative mean epoch time" were calculated by dividing the corresponding absolute value by the minimum value among all 3 neuron types for the given hyperparameters configuration. That is, for each specific configuration of the number of layers and the hidden layer size there are 3 rows, one for each type of neuron; among these 3 rows, the row for the neuron with the smallest absolute best test error will have a relative best test error value equal to 1, and all others will have some values >= 1, similarly for the absolute and relative mean epoch time. 
 
-If we average the relative parameters for each neuron over all possible configurations, we obtain the following results: 
+Aggregated results for Dow Jones index time series are presented in Table \ref{table3}, for ET OTTH time series - in Table \ref{table4} and results, aggregated over both time series are presented in Table \ref{table5}:
 
 \begin{table}[H]
-\caption{Aggregated results on the Dow Jones index time series}
+\caption{Aggregated results on the Dow Jones index time series}\label{table3}
 \begin{tabular}{ |p{2.2cm}|p{5cm}|p{5cm}| }
  \hline
   Neuron type & Aggregated relative best test error & Aggregated relative mean epoch time \\
@@ -503,7 +503,7 @@ If we average the relative parameters for each neuron over all possible configur
 \end{table}
 
 \begin{table}[H]
-\caption{Aggregated results on the ET OTTH time series}
+\caption{Aggregated results on the ET OTTH time series}\label{table4}
 \begin{tabular}{ |p{2.2cm}|p{5cm}|p{5cm}|  }
  \hline
   Neuron type & Aggregated relative best test error & Aggregated relative mean epoch time \\
@@ -518,7 +518,7 @@ If we average the relative parameters for each neuron over all possible configur
 \end{table}
 
 \begin{table}[H]
-\caption{Aggregated results for both time series}
+\caption{Aggregated results for both time series}\label{table5}
 \begin{tabular}{ |p{2.2cm}|p{5cm}|p{5cm}|  }
  \hline
   Neuron type & Aggregated relative best test error & Aggregated relative mean epoch time \\
@@ -542,10 +542,10 @@ Overall summary regarding RSPL neuron:
 
 • If we average the relative best test error over all configurations and over both time series, RSPL takes 1st place. 
 
-To compare pure inference speed of the RSPL neuron we measure the average computation time of networks with GRU and RSPL neurons among 100,000 runs for different values of the input vector size and hidden layer size. The LSTM neuron, as is known from the literature, is generally slower than the GRU.
+To compare pure inference speed of the RSPL neuron we measure the average computation time of networks with GRU and RSPL neurons among 100,000 runs for different values of the input vector size and hidden layer size. The LSTM neuron, as is known from the literature, is generally slower than the GRU. Results of performed computation time measurements are presented in Table \ref{table6}:
 
 \begin{table}[H]
-\caption{Average computation time of networks with GRU/RSPL neurons and different configurations}
+\caption{Average computation time of networks with GRU/RSPL neurons and different configurations}\label{table6}
 \begin{tabular}{ |p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
  \hline
   Input and hidden layer size & 8, 64 & 4, 12 &  4, 32 & 2, 8 & 2, 16 \\
@@ -557,7 +557,7 @@ To compare pure inference speed of the RSPL neuron we measure the average comput
 \end{tabular}
 \end{table}
 
-As can be seen from the table, networks with RSPL neuron are on average 1.58 times faster than networks of the same structure with GRU neuron.
+As can be seen from the Table \ref{table6}, networks with RSPL neuron are on average 1.58 times faster than networks of the same structure with GRU neuron.
 
 \section{Conclusion}\label{sec7}
 In this paper, we have presented a new recurrent neuron - RSPL, that could be used in neural networks for modeling time series forecasting. It is based on the sigmoid piecewise linear neuron and can be viewed as a simplified version of a well known GRU recurrent neuron. RSPL neuron could be used as a drop-in replacement in any networks that use LSTM or GRU neurons.
