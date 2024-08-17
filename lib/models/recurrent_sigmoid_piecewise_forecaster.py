@@ -1,9 +1,9 @@
 from lib.models.potentially_recurrent_forecaster import PRForecaster
 from lib.utils.recurrent_contexts_manager import RecurrentContextsManager
 
-from torch import nn
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from typing import Any
 from typing import Optional
@@ -12,7 +12,8 @@ from typing import Tuple
 
 class RSPForecaster(PRForecaster):
     def __init__(self, ctx_manager: RecurrentContextsManager,
-                 inp_len: int, hidden_size: int, use_out_linear=True, dtype=torch.float32,
+                 inp_len: int, hidden_size: int, use_out_linear=False,
+                 normalize_ctx=False, dtype=torch.float32,
                  *args, **kwargs):
         super().__init__(ctx_manager, *args, **kwargs)
         inp_size = inp_len + hidden_size
@@ -22,6 +23,7 @@ class RSPForecaster(PRForecaster):
         self.use_out_linear = use_out_linear
         if use_out_linear:
             self.out_linear = nn.Linear(inp_len + hidden_size, 1, dtype=dtype)
+        self.normalize_ctx = normalize_ctx
 
     def get_ctx_shape(self) -> Optional[torch.Size]:
         return self.ctx_shape
@@ -36,6 +38,9 @@ class RSPForecaster(PRForecaster):
         ctx_cand = self.w_ctx_cand_lin(inp)
         new_ctx = (1 - z) * ctx + z * ctx_cand
         out = new_ctx
+        # import pdb; pdb.set_trace()
+        if self.normalize_ctx:
+            out = F.normalize(out, dim=-1)
         if self.use_out_linear:
             out = self.out_linear(torch.cat((orig_inp, new_ctx), dim=-1))
         return out, new_ctx
