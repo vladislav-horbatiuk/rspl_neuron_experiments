@@ -37,10 +37,10 @@ class RSPForecaster(PRForecaster):
         z = torch.sigmoid(self.sigm_lin(inp))
         ctx_cand = self.w_ctx_cand_lin(inp)
         new_ctx = (1 - z) * ctx + z * ctx_cand
+        if self.normalize_ctx:
+            new_ctx = F.normalize(new_ctx, dim=-1)
         out = new_ctx
         # import pdb; pdb.set_trace()
-        if self.normalize_ctx:
-            out = F.normalize(out, dim=-1)
         if self.use_out_linear:
             out = self.out_linear(torch.cat((orig_inp, new_ctx), dim=-1))
         return out, new_ctx
@@ -104,14 +104,15 @@ class StackedRCellsForecaster(PRForecaster):
     def __init__(self, ctx_manager: RecurrentContextsManager,
                  inp_len: int, hidden_size: int, num_cells: int, dtype=torch.float32,
                  CellType=RSPForecaster,
+                 cell_args={},
                  *args, **kwargs):
         super().__init__(ctx_manager, *args, **kwargs)
         cells = []
         for i in range(num_cells):
             if i == 0:
-                cells.append(CellType(ctx_manager, inp_len, hidden_size, False, dtype))
+                cells.append(CellType(ctx_manager, inp_len, hidden_size, False, dtype=dtype, **cell_args))
             else:
-                cells.append(CellType(ctx_manager, hidden_size, hidden_size, False, dtype))
+                cells.append(CellType(ctx_manager, hidden_size, hidden_size, False, dtype=dtype, **cell_args))
         self.cells = nn.ModuleList(cells)
         self.out_linear = nn.Linear(inp_len + hidden_size, 1, dtype=dtype)
 
