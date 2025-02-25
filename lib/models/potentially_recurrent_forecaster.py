@@ -12,21 +12,10 @@ from uuid import uuid4
 
 
 class PRForecaster(nn.Module, ABC):
-    MODE_TRAIN = 0
-    MODE_TEST = 1
-
     def __init__(self, ctx_manager: RecurrentContextsManager, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ctx_manager = ctx_manager
         self.cid = str(uuid4())
-        self.sample_index = 0
-        self.mode = self.MODE_TRAIN
-
-    def set_sample_index(self, i):
-        self.sample_index = i
-
-    def set_mode(self, mode):
-        self.mode = mode
 
     # noinspection PyMethodMayBeStatic
     def get_ctx_shape(self) -> Optional[torch.Size]:

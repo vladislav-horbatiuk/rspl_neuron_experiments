@@ -40,7 +40,6 @@ class RSPForecaster(PRForecaster):
         if self.normalize_ctx:
             new_ctx = F.normalize(new_ctx, dim=-1)
         out = new_ctx
-        # import pdb; pdb.set_trace()
         if self.use_out_linear:
             out = self.out_linear(torch.cat((orig_inp, new_ctx), dim=-1))
         return out, new_ctx
@@ -48,7 +47,8 @@ class RSPForecaster(PRForecaster):
 
 class LSTMForecaster(PRForecaster):
     def __init__(self, ctx_manager: RecurrentContextsManager,
-                 inp_len: int, hidden_size: int, use_out_linear=True, dtype=torch.float32,
+                 inp_len: int, hidden_size: int, use_out_linear=True,
+                 normalize_ctx=False, dtype=torch.float32,
                  *args, **kwargs):
         super().__init__(ctx_manager, *args, **kwargs)
         self.hidden_size = hidden_size
@@ -57,6 +57,7 @@ class LSTMForecaster(PRForecaster):
         self.use_out_linear = use_out_linear
         if use_out_linear:
             self.out_linear = nn.Linear(inp_len + 2 * hidden_size, 1, dtype=dtype)
+        self.normalize_ctx = normalize_ctx
 
     def get_ctx_shape(self) -> Optional[torch.Size]:
         return self.ctx_shape
@@ -68,6 +69,8 @@ class LSTMForecaster(PRForecaster):
         hidden_state, cell_state = ctx[..., :self.hidden_size], ctx[..., self.hidden_size:]
         new_hidden, new_cell = self.lstm_cell(inp, (hidden_state, cell_state))
         new_ctx = torch.cat((new_hidden, new_cell), dim=-1)
+        if self.normalize_ctx:
+            new_ctx = F.normalize(new_ctx, dim=-1)        
         out = new_hidden
         if self.use_out_linear:
             out = self.out_linear(torch.cat((inp, new_ctx), dim=-1))
@@ -76,7 +79,8 @@ class LSTMForecaster(PRForecaster):
 
 class GRUForecaster(PRForecaster):
     def __init__(self, ctx_manager: RecurrentContextsManager,
-                 inp_len: int, hidden_size: int, use_out_linear=True, dtype=torch.float32,
+                 inp_len: int, hidden_size: int, use_out_linear=True,
+                 normalize_ctx=False, dtype=torch.float32,
                  *args, **kwargs):
         super().__init__(ctx_manager, *args, **kwargs)
         self.hidden_size = hidden_size
@@ -85,6 +89,7 @@ class GRUForecaster(PRForecaster):
         self.use_out_linear = use_out_linear
         if use_out_linear:
             self.out_linear = nn.Linear(inp_len + hidden_size, 1, dtype=dtype)
+        self.normalize_ctx = normalize_ctx
 
     def get_ctx_shape(self) -> Optional[torch.Size]:
         return self.ctx_shape
@@ -94,6 +99,8 @@ class GRUForecaster(PRForecaster):
                  ctx: Optional[torch.Tensor],
                  **kwargs) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         new_ctx = self.gru_cell(inp, ctx)
+        if self.normalize_ctx:
+            new_ctx = F.normalize(new_ctx, dim=-1)
         out = new_ctx
         if self.use_out_linear:
             out = self.out_linear(torch.cat((inp, new_ctx), dim=-1))
@@ -104,15 +111,15 @@ class StackedRCellsForecaster(PRForecaster):
     def __init__(self, ctx_manager: RecurrentContextsManager,
                  inp_len: int, hidden_size: int, num_cells: int, dtype=torch.float32,
                  CellType=RSPForecaster,
-                 cell_args={},
+                 cell_kwargs={},
                  *args, **kwargs):
         super().__init__(ctx_manager, *args, **kwargs)
         cells = []
         for i in range(num_cells):
             if i == 0:
-                cells.append(CellType(ctx_manager, inp_len, hidden_size, False, dtype=dtype, **cell_args))
+                cells.append(CellType(ctx_manager, inp_len, hidden_size, use_out_linear=False, dtype=dtype, **cell_kwargs))
             else:
-                cells.append(CellType(ctx_manager, hidden_size, hidden_size, False, dtype=dtype, **cell_args))
+                cells.append(CellType(ctx_manager, hidden_size, hidden_size, use_out_linear=False, dtype=dtype, **cell_kwargs))
         self.cells = nn.ModuleList(cells)
         self.out_linear = nn.Linear(inp_len + hidden_size, 1, dtype=dtype)
 
