@@ -88,7 +88,7 @@ def train_and_forecast(model_constructor: Callable[[], PRForecaster],
             max_epochs_wo_improvement: int = 20,
             lr: float = 0.001,
             wd: float = 5e-4,
-            ) -> list:
+            ) -> tuple[float, list]:
     with torch.no_grad():
         model_train_targ = (train_targ - lin_train_out).detach()
         maxmindist = model_train_targ.max() - model_train_targ.min()
@@ -136,4 +136,4 @@ def train_and_forecast(model_constructor: Callable[[], PRForecaster],
             predictions.append(comb_out.squeeze().item())
             curr_inp = torch.cat((curr_inp[:, 1:], comb_out), dim=-1)
         model.delete_context()
-        return predictions
+        return best_val_loss, predictions

@@ -133,3 +133,6 @@ data/
 *.pkl
 
 paper_preparation/
+
+experiments/
+docs/
